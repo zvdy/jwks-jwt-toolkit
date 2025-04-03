@@ -1,0 +1,11 @@
+{
+  "iss": "example-issuer",
+  "sub": "user-123456",
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "role": "admin",
+  "permissions": ["read", "write", "delete"],
+  "iat": 1634000000,
+  "exp": 1634086400,
+  "aud": "https://api.example.com"
+}
