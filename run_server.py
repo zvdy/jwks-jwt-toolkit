@@ -22,8 +22,8 @@ def parse_args():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description='Run the JWKS server')
     parser.add_argument(
-        '--env', 
-        choices=config_map.keys(), 
+        '--env',
+        choices=config_map.keys(),
         default='development',
         help='Environment to use (default: development)'
     )
@@ -43,16 +43,16 @@ def parse_args():
 def main():
     """Main entry point."""
     args = parse_args()
-    
+
     # Set environment
     os.environ['JWKS_ENV'] = args.env
-    
+
     # Override host/port if provided
     if args.host:
         os.environ['JWKS_HOST'] = args.host
     if args.port:
         os.environ['JWKS_PORT'] = str(args.port)
-    
+
     logger.info(f"Starting JWKS server in {args.env} environment")
     run_server()
 
