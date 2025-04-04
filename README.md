@@ -53,7 +53,7 @@ Implementation of a JSON Web Key Set (JWKS) server and JWT client following RFC 
 jwks/
 ├── jwks_server/             # JWKS server implementation
 │   ├── __init__.py
-│   ├── app.py               # Main Flask application 
+│   ├── app.py               # Main Flask application
 │   ├── config.py            # Configuration settings
 │   └── jwk_manager.py       # JWK storage and validation
 └── jwt_client/              # JWT client implementation

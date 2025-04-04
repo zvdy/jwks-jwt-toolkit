@@ -1,6 +1,6 @@
 # Makefile for the JWKS server and JWT client
 
-.PHONY: help install test run-server run-client clean
+.PHONY: help install test run-server run-client clean setup-dev ci-local
 
 help:
 	@echo "JWKS Server and JWT Client"
@@ -11,6 +11,8 @@ help:
 	@echo "  run-server  - Run the JWKS server"
 	@echo "  run-client  - Run the JWT client (pass args with ARGS='...')"
 	@echo "  clean       - Clean up temporary files"
+	@echo "  setup-dev   - Setup development environment with pre-commit hooks"
+	@echo "  ci-local    - Run CI pipeline locally"
 
 install:
 	pip install -r requirements.txt
@@ -38,3 +40,12 @@ clean:
 	find . -type d -name "htmlcov" -exec rm -rf {} +
 	find . -type d -name "dist" -exec rm -rf {} +
 	find . -type d -name "build" -exec rm -rf {} +
+
+setup-dev:
+	pip install pre-commit
+	pre-commit install
+
+ci-local:
+	mkdir -p scripts
+	chmod +x scripts/run_ci_locally.sh
+	bash scripts/run_ci_locally.sh
