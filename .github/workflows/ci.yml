@@ -1,0 +1,49 @@
+name: JWKS CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, '3.10', '3.11', '3.12']
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov
+        pip install -e .
+        
+    - name: Convert unittest tests to pytest
+      run: |
+        mkdir -p pytest_tests
+        cp -r tests/* pytest_tests/
+        sed -i 's/import unittest/import pytest/' pytest_tests/*.py
+        sed -i 's/class Test\([a-zA-Z]*\)(unittest.TestCase)/class Test\1:/' pytest_tests/*.py
+        sed -i 's/self.assert/assert /' pytest_tests/*.py
+        sed -i 's/def setUp/def setup_method/' pytest_tests/*.py
+        sed -i 's/def tearDown/def teardown_method/' pytest_tests/*.py
+        
+    - name: Run tests with pytest
+      run: |
+        pytest pytest_tests/ --cov=jwks_server --cov=jwt_client --cov-report=xml
+        
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        fail_ci_if_error: false
