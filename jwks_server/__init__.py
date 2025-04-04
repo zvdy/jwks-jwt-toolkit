@@ -2,7 +2,7 @@
 JWKS Server Package
 ==================
 
-A Flask-based JWKS (JSON Web Key Set) server implementation 
+A Flask-based JWKS (JSON Web Key Set) server implementation
 following RFC 7517 specifications.
 
 This package provides functionality to:

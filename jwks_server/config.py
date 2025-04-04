@@ -17,21 +17,21 @@ logger = logging.getLogger(__name__)
 
 class Config:
     """Base configuration class for JWKS server."""
-    
+
     # Server settings
     HOST = "0.0.0.0"
     PORT = 5000
     DEBUG = False
-    
+
     # JWKS storage settings
     JWKS_FOLDER = os.path.join(os.getcwd(), "jwks")
     JWKS_FILE = os.path.join(JWKS_FOLDER, "current_jwks.json")
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
-    
+
     # Backup settings
     ENABLE_BACKUPS = True
     BACKUP_FORMAT = "jwks_%Y%m%d%H%M%S.json"
-    
+
     @classmethod
     def get_config(cls) -> Dict[str, Any]:
         """Get configuration as a dictionary."""

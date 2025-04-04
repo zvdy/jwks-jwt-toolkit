@@ -18,30 +18,30 @@ logger = logging.getLogger(__name__)
 class JWTGenerator:
     """
     JSON Web Token Generator
-    
+
     This class provides methods to create JWTs using various key types
     according to RFC 7519.
     """
-    
+
     @staticmethod
-    def generate_jwt(private_key_pem: bytes, 
-                     kid: str, 
+    def generate_jwt(private_key_pem: bytes,
+                     kid: str,
                      payload: Optional[Dict[str, Any]] = None,
                      algorithm: Optional[str] = None,
                      headers: Optional[Dict[str, Any]] = None) -> str:
         """
         Generate a JWT using the provided private key and parameters.
-        
+
         Args:
             private_key_pem (bytes): Private key in PEM format
             kid (str): Key ID to include in the header
             payload (Optional[Dict[str, Any]]): JWT payload, default includes standard claims
             algorithm (Optional[str]): Algorithm to use, auto-detected if not provided
             headers (Optional[Dict[str, Any]]): Additional headers to include
-            
+
         Returns:
             str: The generated JWT
-            
+
         Raises:
             ValueError: If an invalid key or algorithm is provided
         """
@@ -51,7 +51,7 @@ class JWTGenerator:
         except Exception as e:
             logger.error(f"Failed to load private key: {str(e)}")
             raise ValueError(f"Invalid private key: {str(e)}")
-        
+
         # Determine algorithm if not provided
         if algorithm is None:
             try:
@@ -59,7 +59,7 @@ class JWTGenerator:
             except ValueError as e:
                 logger.error(f"Failed to determine algorithm: {str(e)}")
                 raise
-        
+
         # Prepare default payload
         if payload is None:
             payload = {
@@ -69,14 +69,14 @@ class JWTGenerator:
                 "exp": int(time.time()) + 3600,  # 1 hour expiration
                 "jti": f"id-{int(time.time())}"
             }
-        
+
         # Prepare headers
         jwt_headers = {"kid": kid}
         if headers:
             jwt_headers.update(headers)
-        
+
         logger.info(f"Generating JWT with algorithm {algorithm} and kid {kid}")
-        
+
         try:
             # Generate the JWT
             token = jwt.encode(
@@ -89,18 +89,18 @@ class JWTGenerator:
         except Exception as e:
             logger.error(f"Failed to generate JWT: {str(e)}")
             raise ValueError(f"JWT generation failed: {str(e)}")
-    
+
     @staticmethod
     def load_payload_from_file(file_path: str) -> Dict[str, Any]:
         """
         Load a JWT payload from a JSON file.
-        
+
         Args:
             file_path (str): Path to the JSON file
-            
+
         Returns:
             Dict[str, Any]: The loaded payload
-            
+
         Raises:
             ValueError: If the file cannot be read or contains invalid JSON
         """

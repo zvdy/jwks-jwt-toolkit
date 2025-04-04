@@ -28,7 +28,7 @@ app.config["MAX_CONTENT_LENGTH"] = config.MAX_CONTENT_LENGTH
 def get_jwks() -> Tuple[Dict[str, Any], int]:
     """
     Serve the JWK Set according to RFC 7517 section 5.
-    
+
     Returns:
         Tuple[Dict[str, Any], int]: JWKS response and HTTP status code
     """
@@ -45,10 +45,10 @@ def get_jwks() -> Tuple[Dict[str, Any], int]:
 def upload_jwks() -> Tuple[Dict[str, Any], int]:
     """
     Upload a JWK Set.
-    
+
     Accepts a JWK Set either as a JSON file upload or
     direct JSON in the request body.
-    
+
     Returns:
         Tuple[Dict[str, Any], int]: Response message and HTTP status code
     """
@@ -60,7 +60,7 @@ def upload_jwks() -> Tuple[Dict[str, Any], int]:
                 if not jwk_manager.is_valid_jwks(jwks):
                     logger.warning("Invalid JWKS format received")
                     return {"error": "Invalid JWKS format"}, 400
-                
+
                 # Save the JWKS
                 if jwk_manager.save_jwks(jwks):
                     logger.info(f"JWKS uploaded via JSON with {len(jwks.get('keys', []))} keys")
@@ -70,28 +70,28 @@ def upload_jwks() -> Tuple[Dict[str, Any], int]:
                     }, 201
                 else:
                     return {"error": "Failed to save JWKS"}, 500
-            
+
             logger.warning("No file or JSON data provided in upload request")
             return {"error": "No file or JSON data provided"}, 400
-        
+
         # Handle file upload
         file = request.files['file']
         if file.filename == '':
             logger.warning("Empty filename in upload request")
             return {"error": "No file selected"}, 400
-        
+
         if not file.filename.endswith('.json'):
             logger.warning(f"Non-JSON file uploaded: {file.filename}")
             return {"error": "Only .json files are allowed"}, 400
-        
+
         # Read and validate the JWKS from the file
         file_content = file.read().decode('utf-8')
         jwks = json.loads(file_content)
-        
+
         if not jwk_manager.is_valid_jwks(jwks):
             logger.warning("Invalid JWKS format in uploaded file")
             return {"error": "Invalid JWKS format"}, 400
-        
+
         # Save the JWKS
         if jwk_manager.save_jwks(jwks):
             logger.info(f"JWKS uploaded via file with {len(jwks.get('keys', []))} keys")
@@ -101,7 +101,7 @@ def upload_jwks() -> Tuple[Dict[str, Any], int]:
             }, 201
         else:
             return {"error": "Failed to save JWKS"}, 500
-            
+
     except json.JSONDecodeError as e:
         logger.error(f"JSON decode error in upload: {str(e)}")
         return {"error": "Invalid JSON format"}, 400
@@ -114,7 +114,7 @@ def upload_jwks() -> Tuple[Dict[str, Any], int]:
 def list_keys() -> Tuple[Dict[str, Any], int]:
     """
     List all keys in the JWK Set with basic information.
-    
+
     Returns:
         Tuple[Dict[str, Any], int]: List of keys and HTTP status code
     """
@@ -133,7 +133,7 @@ def main():
     """
     # Ensure JWKS directory exists
     os.makedirs(config.JWKS_FOLDER, exist_ok=True)
-    
+
     # Start the server
     logger.info(f"Starting JWKS server on {config.HOST}:{config.PORT}")
     app.run(debug=config.DEBUG, host=config.HOST, port=config.PORT)
